@@ -27,7 +27,7 @@ library(dplyr)
 library(sospatial)
 ice <- tibble(lon = rep_len(seq(-180, 179), length.out = length(packed_lats)), 
               lat = packed_lats/10,
-              day = rep(seq_len(length(packed_lats)/360), each = 360))
+              day = rep(ice_dates, each = 360))
 
 ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), "+proj=stere +lat_0=-90 +datum=WGS84")
 library(ggplot2)
@@ -36,6 +36,29 @@ ggplot(ice, aes(x, y)) + geom_bin2d() + coord_equal()
 ```
 
 ![](README-example-1.png)
+
+``` r
+
+# what does a month look like
+mon <- ice %>% dplyr::filter(format(day, "%m") == "08")
+ggplot(mon, aes(x, y)) + geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
+#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 2 rows containing missing values (geom_tile).
+```
+
+![](README-example-2.png)
+
+``` r
+
+mon$era <- c("old", "new")[(mon$day > as.POSIXct("1998-06-15")) + 1]
+ggplot(mon, aes(x, y)) + 
+  geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
+  facet_wrap(~era)
+#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 4 rows containing missing values (geom_tile).
+```
+
+![](README-example-3.png)
 
 Conduct
 =======

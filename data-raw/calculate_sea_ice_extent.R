@@ -1,6 +1,8 @@
 library(raadtools)
 library(dplyr)
 files <- readice(returnfiles = TRUE) #%>% 
+ice_dates <- files$date[1:12538]
+devtools::use_data(ice_dates, overwrite = TRUE)
 #  filter(date >= as.POSIXct("2008-02-15")) %>% 
 #  filter(between(as.integer(format(date, "%m")), 6, 11))
 #library(sf)
