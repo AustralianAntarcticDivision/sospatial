@@ -4,7 +4,7 @@ sospatial
 
 The goal of sospatial is to provide some easy to use Southern Ocean data sets for mapping and exploration in R.
 
-We aim to fill some existing gaps where (especially) mapping in polar regions causes difficulties.
+We aim to fill some gaps that make mapping in polar regions more difficult that usual.
 
 Example
 -------
@@ -28,8 +28,8 @@ library(sospatial)
 ice <- tibble(lon = rep_len(seq(-180, 179), length.out = length(packed_lats)), 
               lat = packed_lats/10,
               day = rep(ice_dates, each = 360))
-
-ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), "+proj=stere +lat_0=-90 +datum=WGS84")
+prjstere <- "+proj=stere +lat_0=-90 +datum=WGS84"
+ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), prjstere)
 library(ggplot2)
 ggplot(ice, aes(x, y)) + geom_bin2d() + coord_equal()
 #> Warning: Removed 12538 rows containing non-finite values (stat_bin2d).
@@ -59,6 +59,33 @@ ggplot(mon, aes(x, y)) +
 ```
 
 ![](README-example-3.png)
+
+``` r
+
+
+## add the fronts 
+library(orsifronts)
+#> Loading required package: sp
+library(dplyr)
+fronts <- ggplot2::fortify(sp::spTransform(orsifronts, prjstere))
+
+ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
+#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+```
+
+![](README-example-4.png)
+
+``` r
+
+## get a coastline
+cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
+ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
+  xlim(range(fronts$long)) + ylim(range(fronts$lat))
+#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 880 rows containing missing values (geom_path).
+```
+
+![](README-example-5.png)
 
 Conduct
 =======
