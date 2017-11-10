@@ -1,9 +1,14 @@
 Package: sospatial
-Title: What the Package Does (one line, title case)
+Title: Southern Ocean Spatial
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.4.2)
-License: What license is it under?
+Authors@R: c(
+   person("Michael D.","Sumner", role = c("aut", "cre"), email = "michael.sumner@aad.gov.au"), 
+   person("Ben", "Raymond", role = "ctb")
+   )
+Description: Various resources for Southern Ocean mapping. 
+Depends: R (>= 3.3.0)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Suggests: testthat
+RoxygenNote: 6.0.1

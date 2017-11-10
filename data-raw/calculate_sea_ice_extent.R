@@ -19,7 +19,6 @@ get_lat <- function(date) {
 system.time(cl <- purrr::map(files$date, get_lat))p
 #user   system  elapsed 
 #5651.004   32.384 6026.285
+saveRDS(cl, "data-raw/cl_.rds")
 
-## pack and compress the raw latitudes
-packed_lats <- as.integer(round(unlist(cl) * 10))
-saveRDS(packed_lats, "pl.rds", compress = "xz")
+
