@@ -31,7 +31,7 @@ ice <- tibble(lon = rep_len(seq(-180, 179), length.out = length(packed_lats)),
 prjstere <- "+proj=stere +lat_0=-90 +datum=WGS84"
 ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), prjstere)
 library(ggplot2)
-ggplot(ice, aes(x, y)) + geom_bin2d() + coord_equal()
+ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
 #> Warning: Removed 12538 rows containing non-finite values (stat_bin2d).
 ```
 
@@ -41,7 +41,7 @@ ggplot(ice, aes(x, y)) + geom_bin2d() + coord_equal()
 
 # what does a month look like
 mon <- ice %>% dplyr::filter(format(day, "%m") == "08")
-ggplot(mon, aes(x, y)) + geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
 #> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
 #> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
@@ -50,12 +50,14 @@ ggplot(mon, aes(x, y)) + geom_bin2d() + coord_equal() + xlim(range(mon$x)) + yli
 
 ``` r
 
+
 mon$era <- c("old", "new")[(mon$day > as.POSIXct("1998-06-15")) + 1]
 ggplot(mon, aes(x, y)) + 
-  geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
+  geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
   facet_wrap(~era)
 #> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
-#> Warning: Removed 4 rows containing missing values (geom_tile).
+
+#> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
 
 ![](README-example-3.png)
@@ -69,7 +71,7 @@ library(orsifronts)
 library(dplyr)
 fronts <- ggplot2::fortify(sp::spTransform(orsifronts, prjstere))
 
-ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
 #> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
 ```
 
@@ -79,7 +81,7 @@ ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, 
 
 ## get a coastline
 cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
-ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
   xlim(range(fronts$long)) + ylim(range(fronts$lat))
 #> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
 #> Warning: Removed 880 rows containing missing values (geom_path).

@@ -40,15 +40,16 @@ ice <- tibble(lon = rep_len(seq(-180, 179), length.out = length(packed_lats)),
 prjstere <- "+proj=stere +lat_0=-90 +datum=WGS84"
 ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), prjstere)
 library(ggplot2)
-ggplot(ice, aes(x, y)) + geom_bin2d() + coord_equal()
+ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
 
 # what does a month look like
 mon <- ice %>% dplyr::filter(format(day, "%m") == "08")
-ggplot(mon, aes(x, y)) + geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
+
 
 mon$era <- c("old", "new")[(mon$day > as.POSIXct("1998-06-15")) + 1]
 ggplot(mon, aes(x, y)) + 
-  geom_bin2d() + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
+  geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
   facet_wrap(~era)
 
 
@@ -57,11 +58,11 @@ library(orsifronts)
 library(dplyr)
 fronts <- ggplot2::fortify(sp::spTransform(orsifronts, prjstere))
 
-ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
 
 ## get a coastline
 cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
-ggplot(mon, aes(x, y)) + geom_bin2d() + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
+ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
   xlim(range(fronts$long)) + ylim(range(fronts$lat))
 
 ```
