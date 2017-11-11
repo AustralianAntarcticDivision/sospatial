@@ -89,6 +89,52 @@ ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(l
 
 ![](README-example-5.png)
 
+Pull out a specific summary line, say the maximum latitude per longitude for any day in October in the last ten years.
+
+This is a bit of a dummy example, but is the kind of task that we hope to make easier so that these basic summaries can be produced by anyone.
+
+``` r
+oct <-  ice %>% 
+  dplyr::filter(day > as.POSIXct("2007-01-01"), format(day, "%m") == "10") %>% 
+  filter(!is.na(lat)) %>% 
+  group_by(lon) %>% 
+  summarize(lat = max(lat)) 
+
+## construct that as a line, and a polygon
+library(sf)
+#> Linking to GEOS 3.5.1, GDAL 2.2.1, proj.4 4.9.2
+line <- st_sf(geometry = st_sfc(st_linestring(cbind(oct$lon, oct$lat)), crs = 4326), 
+              name = "october_max_2007_2017")
+
+poly <- st_sf(geometry = st_polygonize(st_transform(st_sfc(st_linestring(cbind(oct$lon, oct$lat)[c(1:nrow(oct), 1), ]), crs = 4326), prjstere)), 
+              name = "october_max_2007_2017")
+
+plot(line)
+```
+
+![](README-unnamed-chunk-2-1.png)
+
+``` r
+plot(poly)
+```
+
+![](README-unnamed-chunk-2-2.png)
+
+``` r
+
+## area is a placeholder here, obviously we need to cut out the continent
+## and any polynas
+## area in stere
+st_area(poly)
+#> 4.169151e+13 m^2
+## (more) true area
+## note that this is more like what st_area will give for a longlat dataset
+## so you can't trust sf for  claims of "correctness", Cartesian metrics will
+## always be different (and required) no matter what the coord system is
+st_area(st_transform(poly, "+proj=laea +lat_0=-90 +datum=WGS84"))
+#> 3.843214e+13 m^2
+```
+
 Conduct
 =======
 
