@@ -32,7 +32,7 @@ prjstere <- "+proj=stere +lat_0=-90 +datum=WGS84"
 ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), prjstere)
 library(ggplot2)
 ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
-#> Warning: Removed 12538 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 12609 rows containing non-finite values (stat_bin2d).
 ```
 
 ![](README-example-1.png)
@@ -42,7 +42,7 @@ ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
 # what does a month look like
 mon <- ice %>% dplyr::filter(format(day, "%m") == "08")
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
-#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
 #> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
 
@@ -55,7 +55,7 @@ mon$era <- c("old", "new")[(mon$day > as.POSIXct("1998-06-15")) + 1]
 ggplot(mon, aes(x, y)) + 
   geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
   facet_wrap(~era)
-#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
 
 #> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
@@ -72,7 +72,7 @@ library(dplyr)
 fronts <- ggplot2::fortify(sp::spTransform(orsifronts, prjstere))
 
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
-#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
 ```
 
 ![](README-example-4.png)
@@ -83,7 +83,7 @@ ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(l
 cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
   xlim(range(fronts$long)) + ylim(range(fronts$lat))
-#> Warning: Removed 1074 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
 #> Warning: Removed 880 rows containing missing values (geom_path).
 ```
 
@@ -109,13 +109,14 @@ line <- st_sf(geometry = st_sfc(st_linestring(cbind(oct$lon, oct$lat)), crs = 43
 poly <- st_sf(geometry = st_polygonize(st_transform(st_sfc(st_linestring(cbind(oct$lon, oct$lat)[c(1:nrow(oct), 1), ]), crs = 4326), prjstere)), 
               name = "october_max_2007_2017")
 
-plot(line)
+plot(st_geometry(line))
+plot(orsifronts, add = TRUE, col = "firebrick")
 ```
 
 ![](README-unnamed-chunk-2-1.png)
 
 ``` r
-plot(poly)
+plot(st_geometry(poly))
 ```
 
 ![](README-unnamed-chunk-2-2.png)
@@ -126,13 +127,13 @@ plot(poly)
 ## and any polynas
 ## area in stere
 st_area(poly)
-#> 4.169151e+13 m^2
+#> 4.181186e+13 m^2
 ## (more) true area
 ## note that this is more like what st_area will give for a longlat dataset
-## so you can't trust sf for  claims of "correctness", Cartesian metrics will
-## always be different (and required) no matter what the coord system is
+## since stereographic is not area-preserving and laea will be more faithful
+## the ellipsoidal methods used for longlat
 st_area(st_transform(poly, "+proj=laea +lat_0=-90 +datum=WGS84"))
-#> 3.843214e+13 m^2
+#> 3.853668e+13 m^2
 ```
 
 Conduct

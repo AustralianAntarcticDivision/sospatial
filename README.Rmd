@@ -88,8 +88,9 @@ line <- st_sf(geometry = st_sfc(st_linestring(cbind(oct$lon, oct$lat)), crs = 43
 poly <- st_sf(geometry = st_polygonize(st_transform(st_sfc(st_linestring(cbind(oct$lon, oct$lat)[c(1:nrow(oct), 1), ]), crs = 4326), prjstere)), 
               name = "october_max_2007_2017")
 
-plot(line)
-plot(poly)
+plot(st_geometry(line))
+plot(orsifronts, add = TRUE, col = "firebrick")
+plot(st_geometry(poly))
 
 ## area is a placeholder here, obviously we need to cut out the continent
 ## and any polynas
@@ -97,8 +98,8 @@ plot(poly)
 st_area(poly)
 ## (more) true area
 ## note that this is more like what st_area will give for a longlat dataset
-## so you can't trust sf for  claims of "correctness", Cartesian metrics will
-## always be different (and required) no matter what the coord system is
+## since stereographic is not area-preserving and laea will be more faithful
+## the ellipsoidal methods used for longlat
 st_area(st_transform(poly, "+proj=laea +lat_0=-90 +datum=WGS84"))
 ```
 
