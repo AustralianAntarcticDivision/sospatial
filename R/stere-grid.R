@@ -3,14 +3,16 @@
 #' Generate a grid at one of a set of common resolutions. The input `res` is the resolution
 #' in kilometres. The grid is carefully aligned to `x = 0` so that cell edges intersect exactly 
 #' with the prime meridan and the dateline. 
+#' 
+#' Currently `res` must be one of 24, 16, 8, 4, 1. 
 #' @export
 #' @export
 #' @examples
 #' stere_grid()
 #' stere_grid(16)
-stere_grid <- function(resl = c(24, 16, 8, 4, 1)) {
-  resl <- match.arg(resl)
-  resolutions <- c(24000, 16000, 8000, 4000, 1000)
+stere_grid <- function(res = 24) {
+  stopifnot(res %in% c(24, 16, 8, 4, 1))
+  #resolutions <- c(24000, 16000, 8000, 4000, 1000)
   ## make sure this is TRUE so we don't sample from the dateline exactly
   offset <- 8688000
   #all(((offset / resolutions) - (offset %/% resolutions)) == 0)
