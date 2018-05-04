@@ -8,8 +8,8 @@
 #' @examples
 #' stere_grid()
 #' stere_grid(16)
-stere_grid <- function(res = c(24, 16, 8, 4, 1)) {
-  res <- match.arg(res)
+stere_grid <- function(resl = c(24, 16, 8, 4, 1)) {
+  resl <- match.arg(resl)
   resolutions <- c(24000, 16000, 8000, 4000, 1000)
   ## make sure this is TRUE so we don't sample from the dateline exactly
   offset <- 8688000
