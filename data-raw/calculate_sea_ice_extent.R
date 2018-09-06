@@ -1,7 +1,9 @@
 library(raadtools)
 library(dplyr)
 files <- readice(returnfiles = TRUE) #%>% 
-ice_dates <- files$date
+files <- dplyr::filter(files, as.Date(date) > as.Date(max(ice_dates)))
+ice_dates_new <- files$date
+
 #  filter(date >= as.POSIXct("2008-02-15")) %>% 
 #  filter(between(as.integer(format(date, "%m")), 6, 11))
 #library(sf)
@@ -19,8 +21,12 @@ get_lat <- function(date) {
 }
 system.time(cl <- purrr::map(files$date, get_lat))
 
+ice_dates <- c(ice_dates, ice_dates_new)
+cl_old <- readRDS("data-raw/cl_.rds")
+cl <- c(cl_old, cl)
 devtools::use_data(ice_dates, overwrite = TRUE)
 
 saveRDS(cl, "data-raw/cl_.rds")
+
 
 

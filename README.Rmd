@@ -2,6 +2,8 @@
 output:
   md_document:
     variant: markdown_github
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

@@ -32,7 +32,7 @@ prjstere <- "+proj=stere +lat_0=-90 +datum=WGS84"
 ice[c("x", "y")] <- rgdal::project(as.matrix(ice[c("lon", "lat")]), prjstere)
 library(ggplot2)
 ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
-#> Warning: Removed 12609 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 12908 rows containing non-finite values (stat_bin2d).
 ```
 
 ![](README-example-1.png)
@@ -42,7 +42,7 @@ ggplot(ice, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal()
 # what does a month look like
 mon <- ice %>% dplyr::filter(format(day, "%m") == "08")
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y))
-#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1106 rows containing non-finite values (stat_bin2d).
 #> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
 
@@ -55,7 +55,7 @@ mon$era <- c("old", "new")[(mon$day > as.POSIXct("1998-06-15")) + 1]
 ggplot(mon, aes(x, y)) + 
   geom_bin2d(bins = 120) + coord_equal() + xlim(range(mon$x)) + ylim(range(mon$y)) + 
   facet_wrap(~era)
-#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1106 rows containing non-finite values (stat_bin2d).
 
 #> Warning: Removed 2 rows containing missing values (geom_tile).
 ```
@@ -72,7 +72,7 @@ library(dplyr)
 fronts <- ggplot2::fortify(sp::spTransform(orsifronts, prjstere))
 
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id))
-#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 1106 rows containing non-finite values (stat_bin2d).
 ```
 
 ![](README-example-4.png)
@@ -83,8 +83,8 @@ ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(l
 cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
   xlim(range(fronts$long)) + ylim(range(fronts$lat))
-#> Warning: Removed 1075 rows containing non-finite values (stat_bin2d).
-#> Warning: Removed 880 rows containing missing values (geom_path).
+#> Warning: Removed 1106 rows containing non-finite values (stat_bin2d).
+#> Warning: Removed 4056 rows containing missing values (geom_path).
 ```
 
 ![](README-example-5.png)
@@ -102,7 +102,7 @@ oct <-  ice %>%
 
 ## construct that as a line, and a polygon
 library(sf)
-#> Linking to GEOS 3.5.1, GDAL 2.2.1, proj.4 4.9.2
+#> Linking to GEOS 3.5.1, GDAL 2.2.2, proj.4 4.9.2
 line <- st_sf(geometry = st_sfc(st_linestring(cbind(oct$lon, oct$lat)), crs = 4326), 
               name = "october_max_2007_2017")
 
