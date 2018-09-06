@@ -5,8 +5,10 @@
 #' with the prime meridan and the dateline. 
 #' 
 #' Currently `res` must be one of 24, 16, 8, 4, 1. 
+#' 
 #' @export
-#' @export
+#' 
+#' @importFrom raster raster extent
 #' @examples
 #' stere_grid()
 #' stere_grid(16)
@@ -17,5 +19,5 @@ stere_grid <- function(res = 24) {
   offset <- 8688000
   #all(((offset / resolutions) - (offset %/% resolutions)) == 0)
   prj <- "+proj=stere +lat_0=-90 +lat_ts=-71 +datum=WGS84 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0"
-  raster::raster(extent(-offset, offset, -offset, offset), res = res * 1000, crs = prj)
+  raster::raster(raster::extent(-offset, offset, -offset, offset), res = res * 1000, crs = prj)
 }
