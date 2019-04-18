@@ -2,16 +2,23 @@
 sospatial
 =========
 
-The goal of sospatial is to provide some easy to use Southern Ocean data sets for mapping and exploration in R.
+The goal of sospatial is to provide some easy to use Southern Ocean data
+sets for mapping and exploration in R.
 
-We aim to fill some gaps that make mapping in polar regions more difficult that usual.
+We aim to fill some gaps that make mapping in polar regions more
+difficult that usual.
 
 Example
 -------
 
-This example shows the used of the `packed_lats` cache to draw a rough map of the intensity of where the daily sea ice extent was in the Southern Ocean.
+This example shows the used of the `packed_lats` cache to draw a rough
+map of the intensity of where the daily sea ice extent was in the
+Southern Ocean.
 
-WIP - when this data set is fully spatially and temporally referenced we can use it to extract abstract metrics like "max sea ice extent", which might mean the major 'edge' on the day of greatest extent, or the cumulatively most-northerly location at all longitudes during a year ...
+WIP - when this data set is fully spatially and temporally referenced we
+can use it to extract abstract metrics like “max sea ice extent”, which
+might mean the major ‘edge’ on the day of greatest extent, or the
+cumulatively most-northerly location at all longitudes during a year …
 
 ``` r
 ## reconstruct record
@@ -81,6 +88,10 @@ ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(l
 
 ## get a coastline
 cst <- fortify(sp::spTransform(rnaturalearth::ne_coastline(), prjstere))
+#> The rnaturalearthdata package needs to be installed.
+#> Installing the rnaturalearthdata package.
+#> Installing package into '/perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/3.5'
+#> (as 'lib' is unspecified)
 ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(long, lat, group = group, colour = id)) + geom_path(data = cst, aes(long, lat, group = group)) + 
   xlim(range(fronts$long)) + ylim(range(fronts$lat))
 #> Warning: Removed 1106 rows containing non-finite values (stat_bin2d).
@@ -89,9 +100,11 @@ ggplot(mon, aes(x, y)) + geom_bin2d(bins = 120) + geom_path(data = fronts, aes(l
 
 ![](README-example-5.png)
 
-Pull out a specific summary line, say the maximum latitude per longitude for any day in October in the last ten years.
+Pull out a specific summary line, say the maximum latitude per longitude
+for any day in October in the last ten years.
 
-This is a bit of a dummy example, but is the kind of task that we hope to make easier so that these basic summaries can be produced by anyone.
+This is a bit of a dummy example, but is the kind of task that we hope
+to make easier so that these basic summaries can be produced by anyone.
 
 ``` r
 oct <-  ice %>% 
@@ -102,7 +115,7 @@ oct <-  ice %>%
 
 ## construct that as a line, and a polygon
 library(sf)
-#> Linking to GEOS 3.5.1, GDAL 2.2.2, proj.4 4.9.2
+#> Linking to GEOS 3.7.0, GDAL 2.4.0, PROJ 5.2.0
 line <- st_sf(geometry = st_sfc(st_linestring(cbind(oct$lon, oct$lat)), crs = 4326), 
               name = "october_max_2007_2017")
 
@@ -127,16 +140,18 @@ plot(st_geometry(poly))
 ## and any polynas
 ## area in stere
 st_area(poly)
-#> 4.181186e+13 m^2
+#> 4.181186e+13 [m^2]
 ## (more) true area
 ## note that this is more like what st_area will give for a longlat dataset
 ## since stereographic is not area-preserving and laea will be more faithful
 ## the ellipsoidal methods used for longlat
 st_area(st_transform(poly, "+proj=laea +lat_0=-90 +datum=WGS84"))
-#> 3.853668e+13 m^2
+#> 3.853668e+13 [m^2]
 ```
 
 Conduct
 =======
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of
+Conduct](CONDUCT.md). By participating in this project you agree to
+abide by its terms.

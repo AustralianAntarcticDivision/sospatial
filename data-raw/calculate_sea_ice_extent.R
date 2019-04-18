@@ -19,12 +19,12 @@ get_lat <- function(date) {
    approxfun(coords$long, coords$lat)(reglons)
 
 }
-system.time(cl <- purrr::map(files$date, get_lat))
+system.time(cl <- furrr::future_map(files$date, get_lat))
 
 ice_dates <- c(ice_dates, ice_dates_new)
 cl_old <- readRDS("data-raw/cl_.rds")
 cl <- c(cl_old, cl)
-devtools::use_data(ice_dates, overwrite = TRUE)
+usethis::use_data(ice_dates, overwrite = TRUE)
 
 saveRDS(cl, "data-raw/cl_.rds")
 
